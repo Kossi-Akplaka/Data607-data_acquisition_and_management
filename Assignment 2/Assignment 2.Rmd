@@ -1,0 +1,21 @@
+---
+title: "Assignment 2"
+author: "Kossi Akplaka"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+```
+
+## Data
+This is a summary of how i got the data and transform the data.
+
+### Data Collection
+I've asked some friends to rate 6 movies on the scale of 1 to 5 and leave blank if they haven't seen the movie yet. The data was collected with Google form. Here is the [link](https://forms.gle/jiZaGEf1KMg47kKz7) to the questions on the Google form. 
+
+### Data manipulation
+After data collection, I exported the data in Google sheets and transformed the data into a csv file.
+
