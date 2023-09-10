@@ -1,0 +1,98 @@
+---
+title: "Assignment 1"
+author: "Kossi Akplaka"
+output: html_document
+---
+
+# What Do Men Think It Means To Be A Man?
+
+```{r picture_of_a_man_thinking, echo=FALSE, fig.height=1, fig.width=1, results="asis"}
+knitr::include_graphics("https://dy7glz37jgl0b.cloudfront.net/advice/images/8194ec4af95ebde70d428f11283ae077-man-rests-his-head-on-his-hand-while-sitting-on-a-couch-and-smiling_l.jpeg")
+
+
+```
+
+## Overview 
+This is the data behind the story **What Do Men Think It Means To Be A Man?**.
+
+The masculinity survey contains the results of a survey of 1,615 adult men. They were asked 98 questions or less depending on their previous answers. You can find the article using this [link](https://fivethirtyeight.com/features/what-do-men-think-it-means-to-be-a-man/).
+
+
+```{r global-options, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE, message = FALSE, warning = FALSE)
+# library(tidyverse)
+# library(knitr)
+# library(kableExtra)
+```
+
+
+Install and Load libraries 
+```{r}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+Load the data
+```{r load_data}
+masculinity_survey = read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/masculinity-survey/raw-responses.csv")
+```
+
+## Data manipulation
+
+Find the length of the rows and columns in the data frame
+```{r rows_and_columns_length}
+nrow(masculinity_survey)
+ncol(masculinity_survey)
+```
+
+We can select the columns we only care about for this analysis
+
+```{r select_relevant_columns}
+masculinity_survey2 <- masculinity_survey %>% 
+  select(q0001,q0002,q0004_0001,age3,kids,orientation,weight)
+```
+
+Let's give meaningful names to our variables
+
+- In general, how masculine or “manly” do you feel?: q0001
+- How important is it to you that others see you as masculine?: q0002
+- Where have you gotten your ideas about what it means to be a good man?: q0004_0001
+- Age_Group: 18-33, 34-65, 65 and up
+- Has kids
+- Sexual orientation
+
+```{r relevant_columns}
+masculinity_survey2 <- masculinity_survey2 %>% 
+  rename(Feel_Masculine = q0001, 
+         Importance_of_Masculinity = q0002,
+         Ideas_About_Good_Manhood = q0004_0001,
+         Age_Group = age3,
+         Has_Kids = kids,
+         Sexual_Orientation = orientation,
+         Weight = weight)
+```
+
+Let's load the first 10 observations of the data
+
+```{r glimpse_of_the_data}
+head(masculinity_survey2,10) %>%
+  kable() %>%
+  kable_styling(full_width = FALSE)
+```
+
+## Conclusions
+
+These are few questions I can ask to complete this article.
+
+Comparative Analysis:
+
+- How do the feelings of masculinity differ between individuals with and without children (Has_Kids)?
+- Are there differences in the importance of masculinity among different sexual orientations?
+
+Correlation Analysis:
+
+- Is there a correlation between age and feelings of masculinity?
+- Is there a correlation between the importance of masculinity and weight?
+
+
