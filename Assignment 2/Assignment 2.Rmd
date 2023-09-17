@@ -5,17 +5,122 @@ date: "`r Sys.Date()`"
 output: openintro::lab_report
 ---
 
-```{r load-packages, message=FALSE}
+```{r global-options, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(eval = TRUE, message = FALSE, warning = FALSE)
 library(tidyverse)
-library(openintro)
 ```
 
+
 ## Data
-This is a summary of how i got the data and transform the data.
+This is a summary of how I got the data and transform the data.
 
-### Data Collection
-I've asked some friends to rate 6 movies on the scale of 1 to 5 and leave blank if they haven't seen the movie yet. The data was collected with Google form. Here is the [link](https://forms.gle/jiZaGEf1KMg47kKz7) to the questions on the Google form. 
+##### Using Google forms to gather the information.
+I've asked some friends to rate 6 movies on the scale of 1 to 5 and leave blank if they haven't seen the movie yet. The data was collected with Google forms. Here is the [link](https://forms.gle/jiZaGEf1KMg47kKz7) to the questions on the Google form. 
 
-### Data manipulation
-After data collection, I exported the data in Google sheets and transformed the data into a csv file.
+##### Data manipulation
+After data collection, we can now export the data into a csv file and use "NULL" as a placeholder for missing values.
+
+##### Raw data location
+The raw csv file is stored on my [github](https://github.com/Kossi-Akplaka/Data607-data_acquisition_and_management/blob/a3ab1039c3e2a90ea2a631c6d0e5a66f1057e91b/Assignment%202/Movie_Satifaction.csv).
+
+## MySQL
+Now, we can upload the survey data in mysql by:
+
+- creating a new schema called "assignment2".
+- Then load the csv file in the table "movie_satifaction".
+
+#### Create R dataframe from mySQL
+Let's connect R to MySQL and retrieve the data set stored in a database table.
+
+#### Install and load package RMySQL
+```{r library_RMySQL}
+library('RMySQL')
+```
+#### Import data from MySQL
+We can connect to the database using dbconnect. Also, I can hide the password when connecting to a MySQL database in R by storing the password securely outside your code.
+
+Retrieve the MySQL password from the environment variable
+```{r import_data}
+mysql_password <- Sys.getenv("MYSQL_PASSWORD")
+```
+Establish the database connection and query the database
+```{r}
+mydb = dbConnect(MySQL(), user='root',
+                 password= mysql_password,
+                 dbname='assignment2',
+                 host='localhost')
+
+movie_satifaction_survey <- dbGetQuery(mydb, 
+            "SELECT * FROM assignment2.movie_satifaction;")
+```
+
+Close the database connection when done
+```{r}
+dbDisconnect(mydb)
+```
+
+
+let's have a glimpse of the data
+```{r}
+glimpse(movie_satifaction_survey)
+```
+
+## Is there any benefit in standardizing ratings?
+- It is easier to compare the movies.
+- It is easier to visualize the data (for instance, histograms of standardized ratings can reveal the distribution of ratings more clearly).
+```{r plot_mission_impossible, warning=FALSE}
+ggplot(movie_satifaction_survey, aes(Barbie)) +
+  geom_histogram(binwidth = 1, fill = "pink", color = "black") +
+  labs(title = "Distribution of Barbie Ratings", x = "Rating") +
+  theme_minimal()
+```
+
+We can see that at least 1/3 of the population gave a 4 star rating to Barbie.
+
+## Handling missing data
+Let's try different ways to handle the missing data
+
+#### Fill in the missing values with the mode rating for the respective movie. 
+Create a function to fill with mode
+```{r fill_with_mode}
+calc_mode <- function(x){
+  distinct_values <- unique(x)
+  distinct_tabulate <- tabulate(match(x, distinct_values))
+  distinct_values[which.max(distinct_tabulate)]
+}
+```
+
+Fill missing values in all columns with the mode
+```{r new_data_frame}
+movie_satisfaction_survey_filled <- movie_satifaction_survey %>%
+  mutate(across(everything(), ~replace_na(.x, calc_mode(.x))))
+
+```
+
+View the result
+```{r}
+glimpse(movie_satisfaction_survey_filled)
+```
+Create a visualization to explore 
+
+```{r}
+ggplot(movie_satisfaction_survey_filled, aes(x = Barbie)) +
+  geom_histogram(binwidth = 1, fill = "pink", color = "black") +
+  labs(title = "Distribution of Barbie Ratings", x = "Rating") +
+  theme_minimal()
+
+```
+
+Here, we can see that 2/3 of the population gave a 4 star to the Barbie movie. This shows that the way we handle missing values in the dataset can significantly impact the results and conclusions of your data analysis.
+
+#### Next step: Fill in the missing values with the nearest neighbors.
+
+I will work on an algorithm to fill the missing rating using the nearest neighbors.
+
+
+
+
+
+
+
 
