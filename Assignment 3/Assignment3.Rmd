@@ -1,0 +1,124 @@
+---
+title: "Assignment 3:  R Character Manipulation and Date Processing"
+author: "Kossi Akplaka"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to the problems below.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+
+## 1. Provide code that identifies the majors that contain either "DATA" or "STATISTICS"
+
+Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset [https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/] 
+
+```{r load-data}
+majors_df = read.csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/recent-grads.csv', header = TRUE)
+```
+
+Create a pattern that identifies the major containing either "DATA" or "STATISTICS"
+```{r return-data-stats-major}
+pattern <- "(DATA|STATISTICS)"
+matches <- grep(pattern, majors_df$Major, value = TRUE, ignore.case = TRUE)
+matches
+```
+
+## 2 Write code that transforms the data below:
+
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"
+
+Into a format like this:
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+
+```{r transformed-data}
+raw_data <- '[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"'
+
+transformed_data <- scan(text = raw_data, what = "character", quiet = TRUE, quote = "\"")
+transformed_data <- transformed_data[!grepl("^\\[", transformed_data)]
+
+print(transformed_data)
+```
+
+
+The two exercises below are taken from R for Data Science:
+
+## 3 Describe, in words, what these expressions will match:
+
+- (.)\1\1
+
+This regular expression consists of three parts:
+(.): The first part is a capturing group that matches any single character and captures it.
+\1: The second part is a backreference to the first capturing group. It matches the same character as captured by the first group.
+\1: The third part is another backreference to the first capturing group, matching the same character again.
+This regular expression will match three consecutive identical characters.
+
+- (.)(.)\\2\\1
+
+This regular expression consists of four parts:
+(.): The first part is a capturing group that matches any single character and captures it.
+(.): The second part is another capturing group that matches any single character and captures it.
+\\2: This is a backreference to the second capturing group, matching the character captured by the second group.
+\\1: This is a backreference to the first capturing group, matching the character captured by the first group.
+This regular expression will match two consecutive characters that are the same.
+
+- (..)\1
+
+This regular expression consists of two parts:
+(..): The first part is a capturing group that matches any two consecutive characters and captures them.
+\1: The second part is a backreference to the first capturing group, matching the same two characters as captured by the first group.
+This regular expression will match two consecutive identical pairs of characters.
+
+- (.).\\1.\\1
+
+This regular expression consists of three parts:
+(.): The first part is a capturing group that matches any single character and captures it.
+\\1: This is a backreference to the first capturing group, matching the character captured by the first group.
+\\1: This is another backreference to the first capturing group, matching the same character again.
+This regular expression will match a single character surrounded by two identical characters.
+
+- (.)(.)(.).*\\3\\2\\1
+
+This regular expression consists of five parts:
+(.): The first part is a capturing group that matches any single character and captures it.
+(.): The second part is another capturing group that matches any single character and captures it.
+(.): The third part is yet another capturing group that matches any single character and captures it.
+.*: This part matches zero or more characters (any character sequence).
+\\3\\2\\1: This part is a sequence of backreferences to the capturing groups, matching the characters captured by the third, second, and first groups in that order.
+This regular expression will match a sequence of characters where the last three characters are in reverse order compared to the first three characters.
+
+
+## 4 Construct regular expressions to match words that:
+
+ Start and end with the same character:
+ 
+```{r}
+reg1 = "^(.).+\\1"
+```
+
+ Contain a repeated pair of letters: 
+```{r}
+reg2 = "\\b\\w*(\\w{2})\\w*\\1"
+```
+ 
+
+ Contain one letter repeated in at least three places: 
+```{r}
+reg3 = "^[a-z]*([a-z])\\1[a-z]*"
+```
+ 
+ 
+
+ 
