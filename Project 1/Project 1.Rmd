@@ -1,72 +1,108 @@
 ---
-title: "Lab 1: Intro to R"
-author: "Author Name"
+title: "Project 1"
+author: "Kossi Akplaka"
 date: "`r Sys.Date()`"
-output: openintro::lab_report
+output: 
 ---
 
+```{r echo = FALSE}
+knitr::opts_chunk$set(eval = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+## Getting started
+### Load packages
+Let's load these packages
 ```{r load-packages, message=FALSE}
 library(tidyverse)
-library(openintro)
+library(stringr)
+library(knitr)
 ```
 
-### Exercise 1
-
-```{r view-girls-counts}
-arbuthnot$girls
+### Import the chess data from github
+```{r warning=FALSE}
+chess_df = read_csv(file = 'https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Project%201/chess.txt', col_names = FALSE)
 ```
 
+Let's have a glimpse of the data
+```{r}
+head(chess_df,10)
+```
+## Preprocess the Data
+We can drop the first 4 rows of the data and process the rest of the data. The way the data is structured, we can extract:
 
-### Exercise 2
+- Player Number (Useful to find the average), Player’s Name, and the opponents of the players in one line.
 
-Insert any text here.
+- Player’s State, Total Number of Points, Player’s Pre-Rating on the other line
 
-```{r trend-girls}
-# Insert code for Exercise 2 here
+In this part, we can extract those information into 2 different dataset
+
+
+### Dataset 1: Extract every line starting by a number
+```{r}
+chess <- matrix(unlist(chess_df), byrow=TRUE)
+chess_df1 <- chess[seq(5,length(chess),3)]
+head(chess_df1)
+```
+### Extract data starting by Player's state
+```{r}
+chess_df2 <- chess[seq(6,length(chess),3)]
+head(chess_df2)
 ```
 
+## Data manipulation
+Now, let's extract some useful information
 
-### Exercise 3
-
-Insert any text here.
-
-```{r plot-prop-boys-arbuthnot}
-# Insert code for Exercise 3 here
+Extract the player's number
+```{r}
+PairNum <- as.numeric(str_extract(chess_df1, '\\d+'))
 ```
 
-
-### Exercise 4
-
-Insert any text here.
-
-```{r dim-present}
-# Insert code for Exercise 4 here
+Extract the player's full name (matching first combination of letters until |, then extract the full name)
+```{r}
+Name <- str_extract(chess_df1, '[A-z].{1,32}') 
+Name <- str_trim(str_extract(Name, '.+\\s{2,}'))
 ```
 
-
-### Exercise 5
-
-Insert any text here.
-
-```{r count-compare}
-# Insert code for Exercise 5 here
+Extract the player's state (matching the first 2 letters)
+```{r}
+State <- str_extract(chess_df2, '[A-Z]{2}') 
 ```
 
-
-### Exercise 6
-
-Insert any text here.
-
-```{r plot-prop-boys-present}
-# Insert code for Exercise 6 here
+Extract the player's pre-rating (matching any combination starting from R until -, then taking the first 4 numbers)
+```{r}
+PreRating <- str_extract(chess_df2, 'R:.{8,}-')
+PreRating <- as.numeric(str_extract(PreRating, '\\d{1,4}'))
 ```
 
+Extract the player's rounds (combination of letter, space, 2 numbers, then taking the numbers)
+```{r warning=FALSE}
+Rounds <- str_extract_all(chess_df1, '[A-Z]\\s{2,}\\d+')
+Rounds <- str_extract_all(Rounds, '\\d+')
+```
 
-### Exercise 7
+Extract the total number of points (combination of 1 number, period, a number)
+```{r}
+TotalNumberofPoints <- as.numeric(str_extract(chess_df1, '\\d+\\.\\d'))
+```
 
-Insert any text here.
+Calculate the average Pre chess rating of opponents
+```{r}
+average_Opponents <- c()
+for(i in c(1:length(Rounds))){
+  average_Opponents[i] <- round(mean(PreRating[as.numeric(Rounds[[i]])]),0)
+}
+```
 
-```{r find-max-total}
-# Insert code for Exercise 7 here
+## Creating a new dataframe 
+
+```{r}
+chess_dataframe <- data.frame(PairNum,Name,State,TotalNumberofPoints,PreRating,average_Opponents)
+kable(head(chess_dataframe,10), row.names = NA)
+```
+## Load into a csv format
+We can load this data frame into a csv format. 
+```{r}
+write_csv(chess_dataframe, 'chess.csv')
 ```
 
