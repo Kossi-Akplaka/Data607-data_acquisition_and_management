@@ -1,0 +1,91 @@
+---
+title: "Assignment 05"
+author: "Kossi Akplaka"
+date: "2023-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+## Import libraries
+```{r import-libraries, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+```
+
+## Collect the data
+The data is a csv format and can be found using this [link](https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Assignment5/Assignment5-data607.csv)
+
+```{r load-data}
+df = read.csv('https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Assignment5/Assignment5-data607.csv', sep = ',')
+```
+
+Remove the third row since there is no information and fill missing values
+
+```{r remove-third-row}
+df[2, 1] <- "ALASKA"
+df[5, 1] <- "AM WEST"
+df_clean = df[-3,]
+
+(df_clean)
+```
+Now, let's tidy and transform the data.
+
+- Rename the columns of the data
+```{r rename-columns}
+flight_data = df_clean %>% 
+  rename(Airline = X) %>% 
+  rename(Status = X.1)
+
+flight_data
+```
+
+- Pivot the data from wide to long format
+```{r pivot-data}
+flight_data_long <- flight_data %>% 
+  pivot_longer(cols = c("Los.Angeles", "Phoenix", "San.Diego", "San.Francisco", "Seattle"),
+               names_to = "Destination",
+               values_to = "Count")
+
+flight_data_long
+```
+## Analyse the data
+Now, we can perform an analysis to compare the arrival delays for the two airlines.
+
+Let's look at the average, min, and max of delay in these two airline
+```{r summary-data}
+flight_data_long  %>%
+   filter(Status == "delayed") %>% 
+   group_by(Airline) %>%
+   summarise( Min = min(Count),  Max = max(Count), Mean = round(mean(Count)))
+```
+
+The summary statistics suggests that it's better to take Alaska Airline because it has less delays on average. The minimum and maximum number ALASKA airlines's delayed to different destinations are also lower than AM WEST. 
+
+## Simpson Paradox
+
+Professor Andy introduced in class the Simpson's Paradox which is a statistical phenomenon where a trend appears in different groups of data but disappears or reverses when these groups are combined. 
+
+To check if Simpson's Paradox is present in the data, we would need to examine how the summary statistics change when we consider the data at different levels of aggregation.
+
+You can find more information about Simpson'sParadox in this article "https://towardsdatascience.com/simpsons-paradox-and-interpreting-data-6a0443516765"
+
+Calculate summary statistics for the entire dataset without grouping by airline.
+```{r}
+flight_data_long %>%
+  filter(Status == "delayed") %>%
+  summarise(Min = min(Count), Max = max(Count), Mean = round(mean(Count)))
+
+```
+
+
+
+
+
+
+
+
+
+
