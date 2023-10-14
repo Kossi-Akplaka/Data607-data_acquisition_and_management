@@ -1,0 +1,8 @@
+﻿Work Orders,,Work Order Status,,,,,
+Building,Type,NOASSIGN,WORKASSIGN,WORKPLAN,WORKSCHED,INPROG,COMP
+B7,Prev Maintenance,16,44,47,93,46,2367
+,Corr Maintenacnce,20,7,8,4,16,326
+B23,Prev Maintenance,75,47,24,77,41,1482
+,Corr Maintenacnce,8,20,8,3,18,526
+B30,Prev Maintenance,59,10,15,54,51,2345
+,Corr Maintenacnce,15,11,18,4,8,123
