@@ -1,0 +1,70 @@
+---
+title: "Project2-data2"
+author: "Kossi Akplaka"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+## Import libraries
+```{r import-libraries, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library('zoo') # fill the missing values with the previous non missing value
+library(ggplot2)
+```
+
+## Collect the data
+This data was posted on Slack by the student: Marley Myrianthopoulos
+```{r}
+df2 = read.csv("https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Project%202/Data2-MajorLeagueBaseballcsv.csv")
+head(df2,7)
+```
+## Tidy the data
+First we need to fill the missing values on the first column
+```{r}
+df2$Team[df2$Team == ""] <- NA
+df2$Team <- na.locf(df2$Team)
+df2
+```
+Now we can transform the data from wide to long 
+```{r}
+df2_long <- df2 %>% 
+  pivot_longer(cols = c(X2018.HRs, X2019.HRs, X2021.HRs,
+                        X2022.HRs,X2023.HRs) ,
+               names_to = "Year",
+               values_to = "Home Runs")
+
+head(df2_long, 7)
+```
+Finally let's change the format for the year column
+```{r}
+df2_long$Year <- sub("^X", "", df2_long$Year)
+df2_long$Year <- gsub(".HRs", "", df2_long$Year)
+class(df2_long$Year)
+```
+
+Convert the year column to a date
+```{r}
+df2_long$Year <- as.integer(df2_long$Year)
+head(df2_long,7)
+```
+## Analysis
+
+Let's create a plot showing how many home runs were scored for the position "2B" by the team "BAL" and the team "NYY" overtime.
+```{r}
+
+df2_BAL <- df2_long %>% 
+  filter(Team == 'BAL' & Position == '2B')
+df2_NYY <- df2_long %>% 
+  filter(Team == 'NYY' & Position == '2B')
+
+
+ggplot() +
+  geom_line(data = df2_BAL, aes(x = Year, y = `Home Runs`, color = "BAL"))+
+  geom_line(data = df2_NYY, aes(x = Year, y = `Home Runs`, color = "NYY")) +
+  labs(x = "Year", y = "Home Runs", title = "Home Runs Comparison")
+ 
+```
+
+The plot shows that NYY's players at Position 2B score more home runs than BAL's players.
+
