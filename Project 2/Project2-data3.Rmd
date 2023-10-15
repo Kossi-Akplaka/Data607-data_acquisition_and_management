@@ -1,0 +1,60 @@
+---
+title: "Project2-data3"
+author: "Kossi Akplaka"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+## Import libraries
+```{r import-libraries, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+## Collect the data
+This data was collected on Slack from the student: FOMBA KASSOH.
+
+```{r}
+df3 = read.csv("https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Project%202/Data3-USA-Development-Indicators.csv")
+kable(head(df3)) 
+```
+## Let's tidy the data
+Remove columns 56 to 60
+```{r}
+df3 <- df3[1:55,]
+```
+
+We can transform the data from wide to long
+
+```{r}
+df3_long <- df3 %>%
+  gather(Year, Count, X1990..YR1990.:X2022..YR2022.)
+kable(head(df3_long))
+```
+Now we can tidy the column Year
+```{r}
+df3_long$Year <- as.integer(sub("X(\\d+)\\.\\.YR\\d+\\.", "\\1", df3_long$Year))
+
+head(df3_long$Year)
+```
+## Analysis
+Let's create another data frame with the total population of USA
+
+```{r}
+USA_pop_total <- df3_long %>% 
+  filter(Series.Name == "Population, total")
+kable(USA_pop_total)
+```
+
+Now we can plot the total population of USA between 1990 to 2022
+
+```{r}
+ggplot(data = USA_pop_total, aes(x = Year, y = Count, group = 1)) +
+  geom_line()
+```
+
+The population of USA grew from `r min(USA_pop_total$Count)` to `r max(USA_pop_total$Count)`.
+
+
