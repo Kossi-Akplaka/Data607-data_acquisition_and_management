@@ -1,0 +1,61 @@
+Country Name,Country Code,Series Name,Series Code,1990 [YR1990],2000 [YR2000],2013 [YR2013],2014 [YR2014],2015 [YR2015],2016 [YR2016],2017 [YR2017],2018 [YR2018],2019 [YR2019],2020 [YR2020],2021 [YR2021],2022 [YR2022]
+United States,USA,"Population, total",SP.POP.TOTL,249623000,282162411,316059947,318386329,320738994,323071755,325122128,326838199,328329953,331511512,332031554,333287557
+United States,USA,Population growth (annual %),SP.POP.GROW,1,1,1,1,1,1,1,1,0,1,0,0
+United States,USA,Surface area (sq. km),AG.SRF.TOTL.K2,9629090,9632030,9831510,9831510,9831510,9831510,9831510,9831510,9831510,9831510,9831510,..
+United States,USA,Population density (people per sq. km of land area),EN.POP.DNST,27,31,35,35,35,35,36,36,36,36,36,..
+United States,USA,Poverty headcount ratio at national poverty lines (% of population),SI.POV.NAHC,..,..,..,..,..,..,..,..,..,..,..,..
+United States,USA,Poverty headcount ratio at $2.15 a day (2017 PPP) (% of population),SI.POV.DDAY,1,1,1,1,1,1,1,1,1,0,0,..
+United States,USA,"GNI, Atlas method (current US$)",NY.GNP.ATLS.CD,6006220000000,10146600000000,17064400000000,17765100000000,18158900000000,18459000000000,19254400000000,20739800000000,21713400000000,21432300000000,23539900000000,25454400000000
+United States,USA,"GNI per capita, Atlas method (current US$)",NY.GNP.PCAP.CD,24060,35960,53990,55800,56620,57140,59220,63460,66130,64650,70900,76370
+United States,USA,"GNI, PPP (current international $)",NY.GNP.MKTP.PP.CD,5902290000000,10383700000000,17188300000000,18043100000000,18660900000000,19020500000000,19885600000000,20937400000000,21764500000000,21472400000000,23617100000000,25838900000000
+United States,USA,"GNI per capita, PPP (current international $)",NY.GNP.PCAP.PP.CD,23640,36800,54380,56670,58180,58870,61160,64060,66290,64770,71130,77530
+United States,USA,Income share held by lowest 20%,SI.DST.FRST.20,6,6,5,5,5,5,5,5,5,6,6,..
+United States,USA,"Life expectancy at birth, total (years)",SP.DYN.LE00.IN,75,77,79,79,79,79,79,79,79,77,76,..
+United States,USA,"Fertility rate, total (births per woman)",SP.DYN.TFRT.IN,2,2,2,2,2,2,2,2,2,2,2,..
+United States,USA,"Adolescent fertility rate (births per 1,000 women ages 15-19)",SP.ADO.TFRT,61,47,26,24,22,20,18,17,16,16,16,..
+United States,USA,"Contraceptive prevalence, any method (% of married women ages 15-49)",SP.DYN.CONU.ZS,71,..,..,73,..,76,..,74,..,..,..,..
+United States,USA,Births attended by skilled health staff (% of total),SH.STA.BRTC.ZS,99,99,99,99,99,99,99,99,99,..,..,..
+United States,USA,"Mortality rate, under-5 (per 1,000 live births)",SH.DYN.MORT,11,8,7,7,7,7,7,7,6,6,6,..
+United States,USA,"Prevalence of underweight, weight for age (% of children under 5)",SH.STA.MALN.ZS,..,1,..,1,..,1,..,0,..,..,..,..
+United States,USA,"Immunization, measles (% of children ages 12-23 months)",SH.IMM.MEAS,90,91,92,92,92,92,91,92,90,91,91,..
+United States,USA,"Primary completion rate, total (% of relevant age group)",SE.PRM.CMPT.ZS,..,..,..,..,..,..,99,100,100,101,..,..
+United States,USA,"School enrollment, primary (% gross)",SE.PRM.ENRR,106,..,99,100,100,101,102,101,101,100,..,..
+United States,USA,"School enrollment, secondary (% gross)",SE.SEC.ENRR,91,..,96,97,98,99,99,99,100,101,..,..
+United States,USA,"School enrollment, primary and secondary (gross), gender parity index (GPI)",SE.ENR.PRSC.FM.ZS,1,..,1,1,1,1,1,1,1,1,..,..
+United States,USA,"Prevalence of HIV, total (% of population ages 15-49)",SH.DYN.AIDS.ZS,..,..,0,0,0,0,0,0,0,..,..,..
+United States,USA,Forest area (sq. km),AG.LND.FRST.K2,3024500,3035360,3095450,3098200,3100950,3100950,3097950,3097950,3097950,3097950,3097950,..
+United States,USA,Terrestrial and marine protected areas (% of total territorial area),ER.PTD.TOTL.ZS,..,..,..,..,..,26,26,26,26,24,16,16
+United States,USA,"Annual freshwater withdrawals, total (% of internal resources)",ER.H2O.FWTL.ZS,17,17,15,16,16,16,16,16,16,16,..,..
+United States,USA,Urban population growth (annual %),SP.URB.GROW,1,2,1,1,1,1,1,1,1,1,0,1
+United States,USA,Energy use (kg of oil equivalent per capita),EG.USE.PCAP.KG.OE,7672,8057,6906,6961,6804,..,..,..,..,..,..,..
+United States,USA,CO2 emissions (metric tons per capita),EN.ATM.CO2E.PC,19,20,16,16,16,15,15,15,15,13,..,..
+United States,USA,Electric power consumption (kWh per capita),EG.USE.ELEC.KH.PC,11713,13671,13004,12994,..,..,..,..,..,..,..,..
+United States,USA,GDP (current US$),NY.GDP.MKTP.CD,5963140000000,10250900000000,16843200000000,17550700000000,18206000000000,18695100000000,19477300000000,20533100000000,21381000000000,21060500000000,23315100000000,25462700000000
+United States,USA,GDP growth (annual %),NY.GDP.MKTP.KD.ZG,2,4,2,2,3,2,2,3,2,-3,6,2
+United States,USA,"Inflation, GDP deflator (annual %)",NY.GDP.DEFL.KD.ZG,4,2,2,2,1,1,2,2,2,1,4,7
+United States,USA,"Agriculture, forestry, and fishing, value added (% of GDP)",NV.AGR.TOTL.ZS,..,1,1,1,1,1,1,1,1,1,1,..
+United States,USA,"Industry (including construction), value added (% of GDP)",NV.IND.TOTL.ZS,..,22,19,19,19,18,18,19,18,18,18,..
+United States,USA,Exports of goods and services (% of GDP),NE.EXP.GNFS.ZS,9,11,14,14,12,12,12,12,12,10,11,..
+United States,USA,Imports of goods and services (% of GDP),NE.IMP.GNFS.ZS,11,14,16,16,15,15,15,15,15,13,15,..
+United States,USA,Gross capital formation (% of GDP),NE.GDI.TOTL.ZS,22,24,20,21,21,21,21,21,21,21,21,..
+United States,USA,"Revenue, excluding grants (% of GDP)",GC.REV.XGRT.GD.ZS,18,21,19,19,19,19,19,18,17,18,19,..
+United States,USA,Time required to start a business (days),IC.REG.DURS,..,..,6,6,6,6,6,6,4,..,..,..
+United States,USA,Domestic credit provided by financial sector (% of GDP),FS.AST.DOMS.GD.ZS,146,192,230,233,227,233,242,230,243,281,289,..
+United States,USA,Tax revenue (% of GDP),GC.TAX.TOTL.GD.ZS,10,13,10,11,11,11,12,10,10,10,11,..
+United States,USA,Military expenditure (% of GDP),MS.MIL.XPND.GD.ZS,6,3,4,4,3,3,3,3,3,4,3,3
+United States,USA,Mobile cellular subscriptions (per 100 people),IT.CEL.SETS.P2,2,39,97,100,102,103,103,105,106,105,107,110
+United States,USA,High-technology exports (% of manufactured exports),TX.VAL.TECH.MF.ZS,..,..,20,20,21,22,19,18,19,19,20,..
+United States,USA,Statistical Capacity Score (Overall Average) (scale 0 - 100),IQ.SCI.OVRL,..,..,..,..,..,..,..,..,..,..,..,..
+United States,USA,Merchandise trade (% of GDP),TG.VAL.TOTL.GD.ZS,15,20,23,23,21,20,20,21,20,18,20,21
+United States,USA,Net barter terms of trade index (2015 = 100),TT.PRI.MRCH.XD.WD,103,100,95,96,100,100,100,100,100,100,105,..
+United States,USA,"External debt stocks, total (DOD, current US$)",DT.DOD.DECT.CD,..,..,..,..,..,..,..,..,..,..,..,..
+United States,USA,"Total debt service (% of exports of goods, services and primary income)",DT.TDS.DECT.EX.ZS,..,..,..,..,..,..,..,..,..,..,..,..
+United States,USA,Net migration,SM.POP.NETM,1421775,1479676,1320840,1250914,1221849,1449371,1377630,1200796,1158444,675560,561580,..
+United States,USA,"Personal remittances, received (current US$)",BX.TRF.PWKR.CD.DT,1170000000,4395000000,6613000000,6503000000,6578000000,6330000000,6347000000,6941000000,7049000000,6827000000,7151000000,7431000000
+United States,USA,"Foreign direct investment, net inflows (BoP, current US$)",BX.KLT.DINV.CD.WD,71230000000,349125000000,288131000000,251856000000,511434000000,474388000000,380823000000,214715000000,315984000000,138363000000,493085000000,388078000000
+United States,USA,Net official development assistance and official aid received (current US$),DT.ODA.ALLD.CD,..,..,..,..,..,..,..,..,..,..,..,..
+,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,
+Data from database: World Development Indicators,,,,,,,,,,,,,,,
+Last Updated: 09/19/2023,,,,,,,,,,,,,,,
