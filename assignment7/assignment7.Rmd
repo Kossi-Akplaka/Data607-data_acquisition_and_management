@@ -1,0 +1,77 @@
+---
+title: "Assignment 7"
+author: "Kossi Akplaka"
+date: "2023-10-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Create data 
+
+I created the data in the notebook and load that to my Github
+
+## Load the data
+
+To load the information from the HTML, XML, and JSON sources into separate R data frames, you can use the following code. We will use the rvest package for HTML, XML and xml2 package for XML, and rjson for JSON.
+
+```{r libraries}
+library(rvest) # load html file
+library(xml2)  # Load xml file
+library(XML)   
+library(rjson) # load json file
+```
+
+
+This article "https://www.datacamp.com/tutorial/r-data-import-tutorial" on dataCamp explains how to import HTML, XML, and JSON data in R.
+
+### Load data from HTML into a data frame
+
+Extracting HTML data from github into table
+
+```{r}
+file<-read_html("https://github.com/Kossi-Akplaka/Data607-data_acquisition_and_management/blob/main/assignment7/books.html")
+table<-html_nodes(file, "table")
+table
+```
+Transform into a dataframe
+
+```{r}
+books_html <-html_table(table)[[1]] #converting HTML tables to dataframe
+books_html
+```
+
+### Load data from XML into a data frame
+
+Getting the data
+
+```{r}
+xml_file <- xmlParse(read_xml('https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/assignment7/book.xml'))
+xml_file
+```
+Transform the data into a dataframe
+
+```{r}
+books_xml <- xmlToDataFrame(xml_file)
+books_xml
+```
+
+### Load data from JSON into a data frame
+
+Get the data 
+
+```{r}
+json_file <- fromJSON(file = 'https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/assignment7/books.json')
+json_file
+```
+Transform to a dataframe
+
+```{r}
+# stack list on top of each other
+books_json <- do.call(rbind, lapply(json_file, as.data.frame))
+books_json
+```
+
+The data frames are identical...
