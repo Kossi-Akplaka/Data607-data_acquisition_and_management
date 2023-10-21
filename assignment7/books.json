@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Big Data",
+    "Author1": "Viktor Mayer-Schönberger",
+    "Author2": "Kenneth Neil Cukier",
+    "Attribute1": "Transformative power of big data in various fields",
+    "Attribute2": "Challenges and opportunities of big data"
+  },
+  {
+    "title": "The signal and the noise",
+    "Author1": "Nate Silver",
+    "Author2": "N/A",
+    "Attribute1": "Art and science of prediction",
+    "Attribute2": "Data, statistics, and critical thinking"
+  },
+  {
+    "title": "Superforecasting",
+    "Author1": "Philip E. Tetlock",
+    "Author2": "Dan Gardner",
+    "Attribute1": "Art and science of prediction",
+    "Attribute2": "Challenges and opportunities of big data"
+  }
+]
