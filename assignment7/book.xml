@@ -1,35 +1,23 @@
 <books>
     <book>
         <title>Big Data</title>
-        <authors>
-            <author1>Viktor Mayer-Schönberger</author1>
-            <author2>Kenneth Neil Cukier</author2>
-        </authors>
-        <attributes>
-            <attribute1>Transformative power of big data in various fields</attribute1>
-            <attribute2>Challenges and opportunities of big data</attribute2>
-        </attributes>
+        <author1>Viktor Mayer-Schönberger</authors>
+        <author2>Kenneth Neil Cukier</authors>
+        <attribute1>Transformative power of big data in various fields</attributes>
+	<attribute2>Challenges and opportunities of big data</attributes>
     </book>
     <book>
-        <title>The Signal and the Noise</title>
-        <authors>
-            <author1>Nate Silver</author1>
-            <author2>N/A</author2>
-        </authors>
-        <attributes>
-            <attribute1>Art and science of prediction</attribute1>
-            <attribute2>Data, statistics, and critical thinking</attribute2>
-        </attributes>
+        <title>The signal and the noise</title>
+        <author1>Nate Silver</authors>
+        <author2>N/A</authors>
+        <attribute1>Art and science of prediction</attributes>
+	<attribute2>Data, statistics, and critical thinking</attributes>
     </book>
     <book>
         <title>Superforecasting</title>
-        <authors>
-            <author1>Philip E. Tetlock</author1>
-            <author2>Dan Gardner</author2>
-        </authors>
-        <attributes>
-            <attribute1>Art and science of prediction</attribute1>
-            <attribute2>Challenges and uncertainties of making accurate predictions</attribute2>
-        </attributes>
+        <author1>Philip E. Tetlock</authors>
+        <author2>Dan Gardner</authors>
+        <attribute1>Art and science of prediction</attributes>
+	<attribute2>Challenges and uncertainties of making accurate predictions</attributes>
     </book>
 </books>
