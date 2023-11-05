@@ -1,0 +1,99 @@
+---
+title: "Assignement 09"
+author: "Kossi Akplaka"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+## Load package
+
+We can load the different package needed to get the data and transform the data
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+library(tibble)
+```
+
+## Detail about the data
+I'll get the data from New York Times API. The website is "https://developer.nytimes.com/docs/archive-product/1/overview".
+
+"The Archive API returns an array of NYT articles for a given month, going back to 1851. Its response fields are the same as the Article Search API. The Archive API is very useful if you want to build your own database of NYT article metadata. You simply pass the API the year and month and it returns a JSON object with all articles for that month." (from the NYT description on the overview section.) 
+
+## Make API Requests and Parse JSON Data
+
+First, I am going to define the API endpoint, the date and year and month. Fun fact, March is my birthday's month. So let's find the article written in Mars 2023.
+
+```{r}
+api_key <- "KgkYJkjApX9MFWRi3DU0K5doqwXPZLij"
+year <- 2023
+month <- 3
+
+api_endpoint <- paste0("https://api.nytimes.com/svc/archive/v1/", year, "/", month, ".json")
+```
+
+Next, we can construct the API request URL. 
+
+```{r}
+request_url <- modify_url(api_endpoint, query = list("api-key" = api_key))
+```
+
+Now, we can load the data into a data frame.
+
+```{r}
+response <- GET(request_url)
+data <- as.data.frame(fromJSON(content(response, as = "text")))
+tibble(data)
+```
+
+The data returns an array of NYT articles for the month of March, 2023. 
+
+## Data Tidying
+
+Let's gave a glimpse of the data. The data has a total of 5,769 articles written in March 2023. 
+
+```{r}
+glimpse(data)
+```
+
+Certain columns are collections of data frames. Let's have a look of the headline column "response.docs.headline" in the data frame. It is a data frame of 7 columns. 
+
+We can select the column "response.docs.keywords" and make it wider
+```{r}
+headline_df <- data %>% 
+  select(response.docs.headline) %>% 
+  unnest_wider(response.docs.headline)
+
+head(headline_df)
+```
+## Data Analysis
+
+I would like to know the top 10 category of news NYT covered in March 2023. Let's look at the column "response.docs.news_desk" in the data frame.
+
+View the head of the column
+```{r}
+head(data$response.docs.news_desk)
+```
+Create a data frame of the top 10 category
+
+```{r}
+# Find the top 10
+top10 <- head(sort(table(data$response.docs.news_desk), decreasing = TRUE), 10)
+# Create a data frame
+data_top10 <- data.frame(Category = names(top10), Count = as.numeric(top10))
+data_top10
+```
+It seems like NYT covers Graphics way more than the other topics.Let's plot the top 10 categories
+
+```{r}
+# Create a bar plot
+ggplot(data_top10, aes(x = reorder(Category,-Count),  y = Count)) +
+  geom_bar(stat = "identity", fill = 'skyblue') +
+  labs(title = "Top 10 Categories",
+       x = "Category",
+       y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+
+
