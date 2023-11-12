@@ -1,0 +1,204 @@
+---
+title: "Assignment 10 - NLP"
+author: "Kossi Akplaka"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+## Load the libraries
+
+```{r message=FALSE, warning=FALSE}
+library("tibble")
+library("tidyverse")
+library("tidytext")
+library("textdata")
+library("slam") 
+library('tm')
+library("lexicon") #"SentiWordNet" 
+```
+
+
+
+## Getting the primary example code from chapter 2 of the textbook
+
+Sentiment analysis is a very exited topic and can allow us to understand text better. The second chapter of the [book]("https://www.tidytextmining.com/sentiment#sentiment") A Tidy Approach talks about the approach we can use for sentiment analysis with tidy data.
+
+The following chunks of code are example code that I took from the book "A Tidy Approach".  
+
+
+### Load the library
+
+Let's explore the different sentiment lexicons.
+
+```{r}
+get_sentiments("afinn")
+```
+```{r}
+get_sentiments("bing")
+```
+```{r}
+get_sentiments("nrc")
+```
+## Extend the code with a different corpus and lexicon
+
+Martin Luther King was an advocate for the civil rights movement who delivered the speech "I Have a Dream" on August 28, 1963. This speech is widely considered the greatest speech of the 20th century for its power and resonance. 
+
+I'm interested in using a sentiment lexicon to understand what made the speech so powerful and memorable.
+
+I found a text version of the speech on [Kaggle]("https://www.kaggle.com/datasets/mpwolke/haveadream/data"). I added to my github and start tidying the data.
+
+### Getting the data
+
+```{r message=FALSE, warning=FALSE}
+speech_df <- read.csv("https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Assignment10/dream.txt", header = FALSE)
+tibble(speech_df)
+```
+
+### Sentiment lexicon
+
+The choice of a sentiment lexicon depends on the nature of the text. The *Loughran-McDonald Financial Sentiment Word Lists*, for instance, are tailored for financial text and may not be suitable for a historical speech.
+
+An alternative is to use the *SentiWordNet* lexicon. According to *SentiWordNet* [gitHub]("https://github.com/aesuli/SentiWordNet"), SentiWordNet is a lexical resource for opinion mining that assigns to each synset of WordNet three sentiment scores:
+
+- Positivity
+
+- Negativity 
+
+- Objectivity (neutral)
+
+## Tidy the text data
+
+The speech data has 43 rows and 1 columns. Let's tidy it up, remove the punctuation, etc...into a corpus. 
+
+```{r message=FALSE, warning=FALSE}
+# Interprets each element as a document
+corpus <- Corpus(VectorSource(speech_df$V1))
+
+# Remove quotation marks like “ or ”
+corpus <- tm_map(corpus, content_transformer(function(x) gsub('”', '', x)))
+corpus <- tm_map(corpus, content_transformer(function(x) gsub('“', '', x)))
+
+# Pre-process the data
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+
+# retrieve common words in English
+corpus <- tm_map(corpus, removeWords, stopwords("english")) 
+
+```
+
+
+
+## Data visualization
+
+First, let's count the word for each row and add that in a dataframe df
+
+```{r}
+# Create a Document-Term Matrix (DTM)
+dtm <- DocumentTermMatrix(corpus)
+
+# Convert DTM to a Data Frame
+df <- as.data.frame(as.matrix(dtm))
+tibble(df)
+```
+This data has 43 rows. Let's add all the rows together to count the total number of times each word have been spoken
+
+```{r}
+# Sum the counts across all documents
+total_counts <- colSums(df)
+# Convert to a data frame
+total_counts_df <- data.frame(word = names(total_counts), count = total_counts) %>%
+  group_by(word) %>%
+  summarize(count = sum(count))
+
+head(total_counts_df)
+```
+
+
+Now, we can sort the data frame and plot the 10 most used words in the speech.
+
+```{r}
+# Arrange by count in descending order and select the top 10
+top_10_words <- total_counts_df %>%
+  arrange(desc(count)) %>%
+  head(10)
+
+# Plot the top 10 words
+ggplot(top_10_words, aes(x = reorder(word, count), y = count)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Top 10 Most Used Words in the Speech", x = "Word", y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+
+In his speech, Martin Luther King uses the word "*will*" the most, indicating a forward-looking perspective towards the future. Furthermore, he frequently uses words such as "*freedom*", "*colored*", and "*every*" conveying a vision where individuals, regardless of the color of their skin, will experience universal freedom.
+
+Based on that, one can assume that the speech was very positive and encouraging. Let's use the *SentiWordNet* lexicon to find if that's the case.
+
+
+## Sentiment analysis using SentiWordNet lexicon
+
+SentiWord has a list of 20,000 rows that gives a polarity values. In the dataframe, x is the Words and y stands for the Sentiment values.
+
+Find more in the R Help document (*hash_sentiment_sentiword {lexicon}*)
+
+```{r}
+head(hash_sentiment_sentiword)
+```
+Now we perform an inner join between "total_counts_df" and  "hash_sentiment_sentiword". 
+
+```{r}
+sentiment_analysis_df <- total_counts_df %>%
+  inner_join(hash_sentiment_sentiword, by = c("word" = "x"))
+head(sentiment_analysis_df)
+```
+
+Finally, we can visualize the word vs the sentiment.
+
+```{r}
+
+ggplot(sentiment_analysis_df, aes(x = word, y = y)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Sentiment Scores for Each word", y = "Sentiment Score") +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank())
+
+
+```
+
+
+Based on the distribution, there is no clear pattern. The reason can be:
+
+- Limitation of lexicon analysis as it may not cover all nuances
+
+- The speech was very polarizing. 
+
+Exploring another Lexicon sentiment may provide a more understanding.
+
+
+## Sentiment analysis using AFFINN lexicon
+
+```{r}
+# Load AFINN lexicon
+afinn_lexicon <- get_sentiments("afinn")
+
+# Join total_counts_df with AFINN lexicon
+afinn_analysis_df <- total_counts_df %>%
+  inner_join(afinn_lexicon, by = c("word" = "word"))
+
+# Plot sentiment scores vs terms
+ggplot(afinn_analysis_df, aes(x = word, y = value)) +
+  geom_bar(stat = "identity", fill = "brown") +
+  labs(title = "Sentiment Scores using AFINN for Each word", y = "Sentiment Score") +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank())
+```
+
+Based on the plot, there are slightly more positive words in the AFFINN sentiment. 
+
+
+## Conclusion
+
+Speakers often use rhetorical devices to create emotional impact. This can involve emphasizing challenges and injustices (negative sentiment) while concurrently expressing optimism and aspirations (positive sentiment).
+
+This speech motivate and inspire the audience by incorporating hope, dreams, and the vision for a better future while reminding  the historical struggles for civil rights. 
+
+
