@@ -1,0 +1,194 @@
+---
+title: "Project 4"
+author: "Kossi Akplaka"
+date: "2023-11-26"
+output:
+  html_document: default
+  pdf_document: default
+---
+## Load libraries
+
+```{r message=FALSE, warning=FALSE}
+library(tm)
+library(caret)
+library(tidyverse)
+library(e1071)
+```
+
+## Introduction
+The goal of the project is to classify new documents using already classified "training" documents. First, the full ham/span dataset was downloaded from this website https://spamassassin.apache.org/old/publiccorpus/
+
+From the many datasets on the website, I've chosen the "20030228_easy_ham.tar.bz2" for the ham data and "20021010_spam.tar.bz2" for the spam dataset. 
+
+## Read the data into a DTM
+Now, I'm going to combine both data into a document term matrix and labeled the rows: ham/spam.
+
+Create a function to read files from the folder on my local machine
+```{r}
+read_files <- function(folder_path) {
+  file_names <- list.files(folder_path, full.names = TRUE)
+  file_contents <- lapply(file_names, readLines)
+  return(file_contents)
+}
+```
+
+Read the data
+
+```{r warning=FALSE}
+ham_files <- read_files("C:/Users/akpla/Documents/Project4/easy_ham")
+spam_files <- read_files("C:/Users/akpla/Documents/Project4/spam")
+```
+
+We got a list of 2501 elements in the 'ham_files' and '501' elements in the 'spam_files'.
+
+Assign a label of 1 for ham and 0 for spam
+```{r}
+ham_labels <- rep(1, length(ham_files))
+spam_labels <- rep(0, length(spam_files))
+```
+
+Combine the files and labels into a data frame
+```{r}
+files <- c(ham_files, spam_files)
+labels  <- c(ham_labels, spam_labels)
+# Concatenate the lines  within each element
+data_df <- data.frame(
+  text = sapply(files,
+                function(doc_lines) paste(doc_lines,
+                                          collapse = "\n")),
+  label = as.factor(labels))
+```
+
+Save the data into a csv and upload that into my GitHub to make this assignment reproducible. 
+
+```{r}
+write.csv(data_df, "data.csv", row.names = FALSE)
+```
+
+I loaded the data on gitHub "https://raw.githubusercontent.com/Kossi-Akplaka/Data607-data_acquisition_and_management/main/Project4/data.csv"
+
+## Data Preparation
+
+Prepocess the data: for this part, I just copy and paste the same code I used in my assigment 10 on sentiment analysis to tidy the data. ("https://rpubs.com/NeverBored746/1112638")
+
+```{r message=FALSE, warning=FALSE}
+corpus <- Corpus(VectorSource(files))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("en"))
+corpus <- tm_map(corpus, stripWhitespace)
+```
+
+Create the Document Term matrix DTM and save that in a dataframe.
+
+```{r}
+dtm <- DocumentTermMatrix(corpus)
+df <- as.data.frame(as.matrix(dtm))
+# Tidy the column name to remove to replace any character not valid in R
+colnames(df) <- make.names(colnames(df), unique = TRUE)
+```
+
+Add the labels to the data frame
+```{r}
+df$label <- labels
+```
+
+## Data visualization
+
+Let's explore the top 10 most used words for ham
+
+```{r}
+# Filter the data frame for ham  separately
+ham_words <- df %>%
+  filter(label == 1) %>%
+  select(-label)
+# Sum up the columns
+ham_word_freq <- colSums(ham_words)
+# Create a data frame of the top 10 words for ham
+top_ham_words <- data.frame(word = names(sort(ham_word_freq, decreasing = TRUE)[1:10]),
+                            freq = sort(ham_word_freq, decreasing = TRUE)[1:10])
+top_ham_words
+```
+Plot the data for the top 10 most used word for ham :
+```{r}
+ggplot(top_ham_words, aes(x = reorder(word, -freq), y = freq)) +
+  geom_bar(stat = "identity", fill = 'blue') +
+  labs(title = "Top 10 Words",
+       x = "Word",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Let's do the same thing for spam emails:
+```{r}
+# Filter the data frame for spam  separately
+spam_words <- df %>%
+  filter(label == 0) %>%
+  select(-label)
+# Sum up the columns
+spam_word_freq <- colSums(spam_words)
+# Create a data frame of the top 10 words for spam
+top_spam_words <- data.frame(word = names(sort(spam_word_freq, decreasing = TRUE)[1:10]),
+                            freq = sort(spam_word_freq, decreasing = TRUE)[1:10])
+# Plot the top 10 most used
+ggplot(top_spam_words, aes(x = reorder(word, -freq), y = freq)) +
+  geom_bar(stat = "identity", fill = 'green') +
+  labs(title = "Top 10 Words",
+       x = "Word",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+We can observe that certain words, such as 'received', 'localhost', etc... are common in both ham and spam categories. This suggests that the key to distinguishing between spam and ham lies in identifying words that are less frequently shared between the two categories
+
+## Split the Data into Training and Testing sets
+
+I decided to use 80% of the data for a train set and 20% of the data for the test set
+
+The issue I've encountered is that the data has more than 73,000 features after the it was transformed into DTM. I kept getting errors that the memory allocated for protecting objects in R is exhausted.
+
+I used different techniques like filtering out infrequently occurring words, recursive feature elimination, etc.. but i didn't have success making the model better.
+
+I used the text data to train my models. I split the data between train and test sets.
+
+```{r}
+# Split the data into training (80%) and testing (20%)
+set.seed(123)  # For reproducibility
+train_indices <- createDataPartition(data_df$label, p = 0.8, list = FALSE)
+train_data <- data_df[train_indices, ]
+test_data <- data_df[-train_indices, ]
+```
+
+## Train a classification model
+
+We can use the Naive Bayes algorithm to classify the data. Note that the label is 1 if ham and 0 if spam. 
+
+```{r}
+model <- naiveBayes(label ~ text, data = train_data)
+```
+
+
+## Evaluate the model
+Now, we can evaluates the model using the test set.
+
+```{r}
+# Make predictions on the test data
+predictions <- predict(model, newdata = test_data)
+
+#Evaluates the model
+confusion_matrix <- table(predictions, test_data$label)
+confusion_matrix
+
+```
+
+Model score
+```{r}
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+accuracy
+```
+Our model has an accuracy of 83%.
+
+## Conclusion
+We can use data science to solve real life problem like detecting spams in emails. The next step is to try different algorithms to improve my model.
